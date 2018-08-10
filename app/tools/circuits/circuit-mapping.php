@@ -1,9 +1,5 @@
 <?php
 
-// title
-print "<h4>"._('Map')."</h4>";
-
-
 // fetch and reorder circuit types
 $circuit_types = $Tools->fetch_all_objects ("circuitTypes", "ctname");
 $type_hash = [];
@@ -18,8 +14,8 @@ foreach($locations as $l){ $all_locations[$l->id] = $l; }
 $location_ids_to_map = array();
 $device_locations = [];
 // Map all the logical circuit locations, and retrieve the location from the device if needed
-if($member_circuits != false){
-  foreach($member_circuits as $circuit){
+if($mapping_circuits != false){
+  foreach($mapping_circuits as $circuit){
     if(!in_array($circuit->location1, $location_ids_to_map)) { array_push($location_ids_to_map, $circuit->location1); }
     if(!in_array($circuit->location2, $location_ids_to_map)) { array_push($location_ids_to_map, $circuit->location2); }
     $locationA = $Tools->reformat_circuit_location ($circuit->device1, $circuit->location1);
@@ -80,7 +76,8 @@ elseif ($locA->name!=="/" && $locB->name!=="/") {
                   div: '#gmap',
                   zoom: 15,
                   lat: '<?php print $all_locations[0]->lat; ?>',
-                  lng: '<?php print $all_locations[0]->long; ?>'
+                  lng: '<?php print $all_locations[0]->long; ?>',
+
                 });
 
                 var bounds = [];
@@ -111,7 +108,7 @@ elseif ($locA->name!=="/" && $locB->name!=="/") {
                 }
                 print implode("\n", $html);
                 // add lines
-                foreach ($member_circuits as $circuit) {
+                foreach ($mapping_circuits as $circuit) {
                   //If map_spepcifc is set and its in the array OR it isn't set, map all
                     $locationA = $Tools->reformat_circuit_location ($circuit->device1, $circuit->location1);
                     $locationB = $Tools->reformat_circuit_location ($circuit->device2, $circuit->location2);
@@ -151,7 +148,7 @@ elseif ($locA->name!=="/" && $locB->name!=="/") {
             });
         </script>
 
-        <div style="width:100%; height:400px;" id="map_overlay">
+        <div style="width:100%; height:100%;" id="map_overlay">
         	<div id="gmap" style="width:100%; height:100%;"></div>
         </div>
 
