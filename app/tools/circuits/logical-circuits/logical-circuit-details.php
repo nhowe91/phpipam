@@ -49,15 +49,9 @@ if($logical_circuit!==false) {
 		// map
 		//
 		print "<div class='col-xs-12 col-md-6'>";
-<<<<<<< HEAD:app/tools/circuits/logical-circuit-details.php
-		if($User->settings->enableLocations==1) {
-		print "<div  style='height:400px' class='col-xs-12'>";
-		include("circuit-mapping.php");
-=======
 		if($User->settings->enableLocations==1 && $User->get_module_permissions ("locations")>0) {
 		print "<div class='col-xs-12'>";
 		include("logical-circuit-details-map.php");
->>>>>>> 33826351f9bb6dbcccc315e68a743fe7747f5906:app/tools/circuits/logical-circuits/logical-circuit-details.php
 	    print "</div>";
 		}
 	    print "</div>";
