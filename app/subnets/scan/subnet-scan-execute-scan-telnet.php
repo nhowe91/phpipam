@@ -1,29 +1,26 @@
 <?php
 
+# Check we have been included via subnet-scan-excute.php and not called directly
+require("subnet-scan-check-included.php");
+
 /*
  * Discover new hosts with telnet scan
  *******************************/
 
-# verify that user is logged in
-$User->check_user_session();
-
 # get ports
-if(strlen($_POST['port'])==0) 	  { $Result->show("danger", _('Please enter ports to scan').'!', true); }
+if(empty($_POST['port'])) 	  { $Result->show("danger", _('Please enter ports to scan').'!', true); }
 
 //verify ports
 $pcheck = explode(";", str_replace(",",";",$_POST['port']));
 foreach($pcheck as $p) {
 	if(!is_numeric($p)) {
-		$Result->show("danger", _("Invalid port")." ($p)", true);
+		$Result->show("danger", _("Invalid port").' ('.escape_input($p).')', true);
 	}
 }
 $_POST['port'] = str_replace(";",",",$_POST['port']);
 
 // verify subnetId
 if(!is_numeric($_POST['subnetId'])) { $Result->show("danger", _('Invalid subnet Identifier').'!', true); }
-
-# create csrf token
-$csrf = $User->Crypto->csrf_cookie ("create", "scan");
 
 # invoke CLI with threading support
 $cmd = $Scan->php_exec." ".dirname(__FILE__) . "/../../../functions/scan/subnet-scan-telnet-execute.php $_POST[subnetId] '$_POST[port]'";

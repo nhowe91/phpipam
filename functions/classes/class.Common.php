@@ -410,12 +410,12 @@ class Common_functions  {
         // check if cache is already set, otherwise save
         if ($this->cache_check_exceptions($table)===false) {
             if (!isset($this->Database->cache[$table][$identifier][$id])) {
-                $this->Database->cache[$table][$identifier][$id] = (object) $object;
                 // add ip ?
                 $ip_check = $this->cache_check_add_ip($table);
                 if ($ip_check!==false) {
-                    $this->Database->cache[$table][$identifier][$id]->ip = $this->transform_address ($object->{$ip_check}, "dotted");
+                    $object->ip = $this->transform_address ($object->{$ip_check}, "dotted");
                 }
+                $this->Database->cache[$table][$identifier][$id] = clone (object) $object;
             }
         }
     }
@@ -474,7 +474,7 @@ class Common_functions  {
         // get method
         $method = $this->cache_set_identifier ($table);
         // check if cache is already set, otherwise return false
-        if (isset($this->Database->cache[$table][$method][$id]))  { return (object) $this->Database->cache[$table][$method][$id]; }
+        if (isset($this->Database->cache[$table][$method][$id]))  { return clone (object) $this->Database->cache[$table][$method][$id]; }
         else                                            { return false; }
     }
 
@@ -832,6 +832,25 @@ class Common_functions  {
     	}
     	// return
     	return $mac;
+	}
+
+	/**
+	* Returns true if site is accessed with https
+	*
+	* @access public
+	* @return bool
+	*/
+	public function isHttps() {
+		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+			return true;
+		}
+		if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+			return true;
+		}
+		if (!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on') {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -1871,7 +1890,7 @@ class Common_functions  {
 
 	    $html[] = "<div class='dropdown'>";
 	    $html[] = "  <button class='btn btn-xs btn-default dropdown-toggle ' type='button' id='dropdownMenu' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true' rel='tooltip' title='"._("Actions")."'> "._($action_text)." <span class='caret'></span></button>";
-	    $html[] = "  <ul class='dropdown-menu $alignment' aria-labelledby='dropdownMenu' style='z-index:9'>";
+	    $html[] = "  <ul class='dropdown-menu $alignment' aria-labelledby='dropdownMenu'>";
 
 	    // loop items
 	    foreach ($items as $i) {

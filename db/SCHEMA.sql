@@ -139,8 +139,7 @@ CREATE TABLE `sections` (
   `showSupernetOnly` BOOL  NOT NULL  DEFAULT '0',
   `DNS` VARCHAR(128)  NULL  DEFAULT NULL,
   PRIMARY KEY (`name`),
-  UNIQUE KEY `id_2` (`id`),
-  KEY `id` (`id`)
+  UNIQUE KEY `id_2` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* insert default values */
 INSERT INTO `sections` (`id`, `name`, `description`, `permissions`)
@@ -288,7 +287,7 @@ CREATE TABLE `subnets` (
   `lastScan` TIMESTAMP  NULL,
   `lastDiscovery` TIMESTAMP  NULL,
   PRIMARY KEY (`id`),
-  KEY `masterSubnetId` (`subnet`),
+  KEY `masterSubnetId` (`masterSubnetId`),
   KEY `location` (`location`),
   KEY `sectionId` (`sectionId`),
   KEY `vrfId` (`vrfId`),
@@ -320,7 +319,7 @@ CREATE TABLE `devices` (
   `snmp_community` varchar(100) DEFAULT NULL,
   `snmp_version` set('0','1','2','3') DEFAULT '0',
   `snmp_port` mediumint(5) unsigned DEFAULT '161',
-  `snmp_timeout` mediumint(5) unsigned DEFAULT '500',
+  `snmp_timeout` mediumint(5) unsigned DEFAULT '1000',
   `snmp_queries` varchar(128) DEFAULT NULL,
   `snmp_v3_sec_level` set('none','noAuthNoPriv','authNoPriv','authPriv') DEFAULT 'none',
   `snmp_v3_auth_protocol` set('none','MD5','SHA') DEFAULT 'none',
@@ -393,8 +392,7 @@ CREATE TABLE `users` (
   `module_permissions` varchar(255) COLLATE utf8_bin DEFAULT '{"vlan":"1","vrf":"1","pdns":"1","circuits":"1","racks":"1","nat":"1","pstn":"1","customers":"1","locations":"1","devices":"1"}',
   `compress_actions` TINYINT(1)  NULL  DEFAULT '1',
   PRIMARY KEY (`username`),
-  UNIQUE KEY `id_2` (`id`),
-  KEY `id` (`id`)
+  UNIQUE KEY `id_2` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /* insert default values */
 INSERT INTO `users` (`id`, `username`, `password`, `groups`, `role`, `real_name`, `email`, `domainUser`,`widgets`, `passChange`)
@@ -425,7 +423,8 @@ VALUES
 	(8, 'cs_CZ.UTF-8', 'Czech'),
 	(9, 'en_US.UTF-8', 'English (US)'),
   (10,'ru_RU.UTF-8', 'Russian'),
-  (11,'zh_CN.UTF-8', 'Chinese');
+  (11,'zh_CN.UTF-8', 'Chinese'),
+  (12,'ja_JP.UTF-8', 'Japanese');
 
 
 # Dump of table vlans
@@ -933,7 +932,7 @@ INSERT INTO `circuitTypes` (`ctname`) VALUES ('Default');
 DROP TABLE IF EXISTS `php_sessions`;
 
 CREATE TABLE `php_sessions` (
-  `id` varchar(32) NOT NULL DEFAULT '',
+  `id` varchar(128) NOT NULL DEFAULT '',
   `access` int(10) unsigned DEFAULT NULL,
   `data` text NOT NULL,
   `remote_ip` varchar(100) DEFAULT NULL,
@@ -945,4 +944,4 @@ CREATE TABLE `php_sessions` (
 # ------------------------------------------------------------
 
 UPDATE `settings` SET `version` = "1.4";
-UPDATE `settings` SET `dbversion` = 14;
+UPDATE `settings` SET `dbversion` = 20;

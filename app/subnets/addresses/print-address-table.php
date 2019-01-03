@@ -106,7 +106,7 @@ if(sizeof($custom_fields) > 0) {
 # set colspan for output
 $colspan['empty']  = $selected_ip_fields_size + sizeof($custom_fields) +4;		//empty colspan
 $colspan['unused'] = $selected_ip_fields_size + sizeof($custom_fields) +3;		//unused colspan
-$colspan['dhcp']   = $selected_ip_fields_size + sizeof($custom_fields);			//dhcp colspan
+$colspan['dhcp']   = $selected_ip_fields_size + sizeof($custom_fields) -4;		//dhcp colspan
 $colspan['dhcp']   = in_array("firewallAddressObject", $selected_ip_fields) ? $colspan['dhcp']-1 : $colspan['dhcp'];
 $colspan['dhcp']   = ($colspan['dhcp'] < 0) ? 0 : $colspan['dhcp'];				//dhcp colspan negative fix
 
@@ -253,7 +253,7 @@ else {
 				    //calculate
 				    $tDiff = time() - strtotime($addresses[$n]->lastSeen);
 				    if($addresses[$n]->excludePing=="1" ) { $hStatus = "padded"; $hTooltip = ""; }
-				    if(is_null($addresses[$n]->lastSeen))   { $hStatus = "neutral"; $hTooltip = "rel='tooltip' data-container='body' data-html='true' data-placement='left' title='"._("Address was never online")."'"; }
+				    elseif(is_null($addresses[$n]->lastSeen))   { $hStatus = "neutral"; $hTooltip = "rel='tooltip' data-container='body' data-html='true' data-placement='left' title='"._("Address was never online")."'"; }
 				    elseif($tDiff < $statuses[0])	{ $hStatus = "success";	$hTooltip = "rel='tooltip' data-container='body' data-html='true' data-placement='left' title='"._("Address is alive")."<hr>"._("Last seen").": ".$addresses[$n]->lastSeen."'"; }
 				    elseif($tDiff < $statuses[1])	{ $hStatus = "warning"; $hTooltip = "rel='tooltip' data-container='body' data-html='true' data-placement='left' title='"._("Address warning")."<hr>"._("Last seen").": ".$addresses[$n]->lastSeen."'"; }
 				    elseif($tDiff > $statuses[1])	{ $hStatus = "error"; 	$hTooltip = "rel='tooltip' data-container='body' data-html='true' data-placement='left' title='"._("Address is offline")."<hr>"._("Last seen").": ".$addresses[$n]->lastSeen."'";}
@@ -567,7 +567,7 @@ else {
 			// now search for similar addresses if chosen
 			if (strlen($User->settings->link_field)>0) {
     			// search
-    			$similar = $Addresses->search_similar_addresses ($User->settings->link_field, $addresses[$n]->{$User->settings->link_field}, $addresses[$n]->id);
+    			$similar = $Addresses->search_similar_addresses ($addresses[$n], $User->settings->link_field, $addresses[$n]->{$User->settings->link_field});
 
     			if($similar!==false) {
 
