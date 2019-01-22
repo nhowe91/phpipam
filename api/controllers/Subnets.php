@@ -194,6 +194,7 @@ class Subnets_controller extends Common_api_functions {
 	 *		- /custom_fields/				// returns custom fields
 	 *		- /cidr/{subnet}/				// subnets in CIDR format
 	 *		- /search/{subnet}/				// subnets in CIDR format (same as above)
+	 *		- /overlaping/{subnet}/			// returns all overlapping subnets
 	 *		- /{id}/usage/				    // returns subnet usage
 	 *		- /{id}/slaves/ 			    // returns all immediate slave subnets
 	 *		- /{id}/slaves_recursive/ 	    // returns all slave subnets recursively
@@ -213,16 +214,21 @@ class Subnets_controller extends Common_api_functions {
 		// check if id2 is set ?
 		if(isset($this->_params->id2)) {
 			// is IP address provided
-			if($this->_params->id=="cidr") {
+			if($this->_params->id=="cidr" || $this->_params->id=="search") {
 				$result = $this->read_search_subnet ();
 				// check result
 				if($result==false)						{ $this->Response->throw_exception(200, "No subnets found"); }
 				else									{ return array("code"=>200, "data"=>$this->prepare_result ($result, null, true, true)); }
 			}
-			else {
-				// validate id
-				$this->validate_subnet_id ();
+
+			if($this->_params->id=="overlapping") {
+				$result = $this->read_overlapping_subnet ();
+				if($result==false)						{ $this->Response->throw_exception(200, "No subnets found"); }
+				else									{ return array("code"=>200, "data"=>$this->prepare_result ($result, null, true, true)); }
 			}
+
+			// validate id
+			$this->validate_subnet_id ();
 
 			// addresses in subnet
 			if($this->_params->id2=="addresses") {
@@ -861,6 +867,18 @@ class Subnets_controller extends Common_api_functions {
 		}
 		# result
 		return !isset($result) ? false : $result;
+	}
+
+	/**
+	 * Searches for overlapping subnets in database (Supports IPv4 & IPv6)
+	 *
+	 * @access private
+	 * @return array|false
+	 */
+	private function read_overlapping_subnet () {
+		// Fetch overlapping subnets
+		$subnet = $this->Subnets->fetch_overlapping_subnets ($this->_params->id2.'/'.$this->_params->id3);
+		return is_array($subnet) ? $subnet : false;
 	}
 
 

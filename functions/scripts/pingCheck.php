@@ -105,7 +105,7 @@ foreach($scan_subnets as $s) {
 			                   );
 		}
 		//save addresses
-		if(sizeof($subnet_addresses)>0) {
+		if(is_array($subnet_addresses) && sizeof($subnet_addresses)>0) {
 			foreach($subnet_addresses as $a) {
 				//ignore excludePing
 				if($a->excludePing!=1) {
@@ -200,7 +200,7 @@ if($Scan->icmp_type=="fping") {
 
 	//now we must remove all non-existing hosts
 	foreach($subnets as $sk=>$s) {
-		if(!empty(@$s['result']) && is_array($addresses[$s['id']])) {
+		if(!empty($s['result']) && is_array($addresses[$s['id']])) {
 			//loop addresses
 			foreach($addresses[$s['id']] as $ak=>$a) {
 				//offline host

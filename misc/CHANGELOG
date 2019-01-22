@@ -15,6 +15,7 @@
     + PHP 5.4 is now required;
     + Added compressed actions dropdown;
     + SNMP module no longer requires MIB files;
+    + Performance enhancements running under Azure/Amazon;
     + Rack module enhancements (#1325):
         + Dynamic rack sizes;
         + Top-down / Bottom-up racks;
@@ -35,6 +36,7 @@
         + New config.php option $api_allow_unsafe to allow non-SSL API queries;
         + Added last access field to api;
         + Add Mac Search for Addresses controller (#2005);
+        + New overlapping API call;
     + Widgets:
         + New user instruction widget (#2383);
 
@@ -54,6 +56,7 @@
     + Fix " - is required" error when adding IPs with an empty IP filter set (#2334);
     + Fix column 'masterSubnetId' cannot be null error when adding subnets (#1977);
     + Fix logical circuits add/delete errors (#2381);
+    + Fix adding new VLANs to an empty L2Domain (#2400);
     + API:
         + Fix inconsistent API success value returned (#2045);
         + Fix filter_by functionality (#2392);
